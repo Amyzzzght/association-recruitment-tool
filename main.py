@@ -10,8 +10,9 @@ from __future__ import annotations
 import argparse
 from pathlib import Path
 
-from recruitment_tool.io import read_csv
+from recruitment_tool.io import read_csv, write_csv
 from recruitment_tool.overview import generate_overview, print_overview
+from recruitment_tool.validator import validate_and_clean, print_validation_summary
 
 
 def main() -> None:
@@ -36,6 +37,15 @@ def main() -> None:
     # 需求 1：概览
     overview = generate_overview(df)
     print_overview(overview)
+
+    # 需求 2：校验与清洗
+    clean_df, problems_df = validate_and_clean(df)
+    print_validation_summary(problems_df, len(df))
+
+    # 导出问题清单（不修改原文件）
+    problems_path = output_dir / "问题清单.csv"
+    write_csv(problems_df, problems_path)
+    print(f"\n问题清单已导出：{problems_path}")
 
 
 if __name__ == "__main__":
