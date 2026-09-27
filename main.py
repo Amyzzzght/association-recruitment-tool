@@ -13,6 +13,11 @@ from pathlib import Path
 from recruitment_tool.io import read_csv, write_csv
 from recruitment_tool.overview import generate_overview, print_overview
 from recruitment_tool.validator import validate_and_clean, print_validation_summary
+from recruitment_tool.statistics import (
+    count_volunteer_filled,
+    group_by_first_choice,
+    print_statistics,
+)
 
 
 def main() -> None:
@@ -46,6 +51,21 @@ def main() -> None:
     problems_path = output_dir / "问题清单.csv"
     write_csv(problems_df, problems_path)
     print(f"\n问题清单已导出：{problems_path}")
+
+    # 需求 3：统计与导出
+    first_choice_summary = group_by_first_choice(clean_df)
+    volunteer_stats = count_volunteer_filled(clean_df)
+    print_statistics(first_choice_summary, volunteer_stats)
+
+    # 导出第一志愿汇总表
+    summary_path = output_dir / "第一志愿汇总.csv"
+    write_csv(first_choice_summary, summary_path)
+    print(f"\n第一志愿汇总表已导出：{summary_path}")
+
+    # 导出干净数据
+    clean_path = output_dir / "干净数据.csv"
+    write_csv(clean_df, clean_path)
+    print(f"干净数据已导出：{clean_path}")
 
 
 if __name__ == "__main__":
